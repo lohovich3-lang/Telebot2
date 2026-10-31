@@ -11,21 +11,20 @@ bot = telebot.TeleBot(TOKEN)
 
 app = Flask("")
 
+
 @app.route("/")
 def home():
   return "Бот успешно работает 24\7!"
+
 
 def run_flask():
   port = int(os.environ.get("PORT", 8080))
   app.run(host="0.0.0.0", port=port)
 
+
 def keep_alive():
   t = threading.Thread(target=run_flask)
   t.start()
-
-
-
-
 
 
 n1 = ["админ гей", "админ лох", "админ лошара", "админ даун"]
@@ -61,6 +60,32 @@ ADMIN_ID = 1475257511
 
 user_last_message_time = {}
 SPAM_INTERVAL = 1.5  # Интервал антиспама в секундах
+
+DB_FILE = "numbers_list.txt"
+
+
+# --- Функции для работы с числами ---
+def load_numbers():
+  if os.path.exists(DB_FILE):
+    try:
+      with open(DB_FILE, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        numbers = []
+        for line in lines:
+          val = line.strip()
+          if val:
+            num = float(val) if "." in val else int(val)
+            numbers.append(num)
+        return numbers
+    except Exception:
+      pass
+  return []
+
+
+def save_number(number, append=True):
+  mode = "a" if append else "w"
+  with open(DB_FILE, mode, encoding="utf-8") as f:
+    f.write(f"{number}\n")
 
 
 # Функция для отложенного удаления сообщений (300 секунд = 5 минут)
@@ -117,7 +142,73 @@ def handle_all_messages(message):
 
   # --- 2. ЛОГИКА ДЛЯ АДМИНИСТРАТОРА ---
   if user_id == ADMIN_ID:
-    if text == "привет, идиот.":
+    # Обработка команды /set (только для админа)
+    if text.startswith("/set"):
+      command_parts = message.text.split(maxsplit=1)
+      if len(command_parts) < 2:
+        sent_msg = bot.reply_to(
+            message,
+            "⚠️ Укажите число.\n**Пример:** `/set 100`",
+            parse_mode="Markdown",
+        )
+      else:
+        try:
+          val = command_parts[1].replace(",", ".")
+          num = float(val)
+          if num.is_integer():
+            num = int(num)
+          save_number(num, append=False)
+          sent_msg = bot.reply_to(
+              message,
+              f"🔄 Список очищен. Первый донат **{num}** сохранен!",
+              parse_mode="Markdown",
+          )
+        except ValueError:
+          sent_msg = bot.reply_to(
+              message, "⚠️ Ошибка! Введите корректное число."
+          )
+      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+      return
+
+    # Обработка команды /add (только для админа)
+    elif text.startswith("/add"):
+      command_parts = message.text.split(maxsplit=1)
+      if len(command_parts) < 2:
+        sent_msg = bot.reply_to(
+            message,
+            "⚠️ Укажите донат для добавления.\n**Пример:** `/add 50`",
+            parse_mode="Markdown",
+        )
+      else:
+        try:
+          val = command_parts[1].replace(",", ".")
+          new_num = float(val)
+          if new_num.is_integer():
+            new_num = int(new_num)
+
+          save_number(new_num, append=True)
+          numbers = load_numbers()
+          total = sum(numbers)
+          if isinstance(total, float) and total.is_integer():
+            total = int(total)
+
+          column_str = "\n".join(str(n) for n in numbers)
+          response = (
+              f"📥 **Все сохраненные пожертвования:**\n\n"
+              f"{column_str}\n"
+              f"────────\n"
+              f"**Сумма: {total}**"
+          )
+          sent_msg = bot.reply_to(message, response, parse_mode="Markdown")
+        except ValueError:
+          sent_msg = bot.reply_to(
+              message, "⚠️ Ошибка! Введите корректное число."
+          )
+      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+      return
+
+    # Старые админские команды
+    elif text == "привет, идиот.":
       sent_msg = bot.reply_to(message, "Привет @Nikita2015PRO, Как дела?")
       send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
     elif text == "все супер,как сам?.":
@@ -135,19 +226,20 @@ def handle_all_messages(message):
 
   # --- 3. ЛОГИКА ДЛЯ ОБЫЧНЫХ ПОЛЬЗОВАТЕЛЕЙ ---
   else:
+    # Если обычный пользователь попытается написать /set или /add, бот проигнорирует их
+    if text.startswith("/set") or text.startswith("/add"):
+      return
+
     # Проверка n1 (Гифка-детектор)
     if any(word in text for word in n1):
-      gif_url = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTRrN3RvaGtoaGpyaWVidWVkMWpmNzFkdHNnbHZjcnJhZW03YnJ4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YVT4w8N5O7qSiftMNq/giphy.gif"
-      try:
-        sent_msg = bot.send_animation(
-            chat_id=message.chat.id,
-            animation=gif_url,
-            caption="🫣",
-            reply_to_message_id=message.message_id,
-        )
-        send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
-      except Exception as e:
-        print(f"Ошибка отправки гифки: {e}")
+      gif_url = "https://media.tenor.com/O48JO-INXWYAAAAM/truth-lie-detector.gif"
+      sent_msg = bot.send_animation(
+          chat_id=message.chat.id,
+          animation=gif_url,
+          caption="🫣",
+          reply_to_message_id=message.message_id,
+      )
+      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
 
     # Проверка n2 (Донат)
     elif any(word in text for word in n2):
