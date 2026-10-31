@@ -137,14 +137,17 @@ def handle_all_messages(message):
   else:
     # Проверка n1 (Гифка-детектор)
     if any(word in text for word in n1):
-      gif_url = "https://media1.giphy.com/media/3o7TKSjRrfIPjeiOkM/giphy.gif"
-      sent_msg = bot.send_animation(
-          chat_id=message.chat.id,
-          animation=gif_url,
-          caption="🫣",
-          reply_to_message_id=message.message_id,
-      )
-      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+      gif_url = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTRrN3RvaGtoaGpyaWVidWVkMWpmNzFkdHNnbHZjcnJhZW03YnJ4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YVT4w8N5O7qSiftMNq/giphy.gif"
+      try:
+        sent_msg = bot.send_animation(
+            chat_id=message.chat.id,
+            animation=gif_url,
+            caption="🫣",
+            reply_to_message_id=message.message_id,
+        )
+        send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+      except Exception as e:
+        print(f"Ошибка отправки гифки: {e}")
 
     # Проверка n2 (Донат)
     elif any(word in text for word in n2):
