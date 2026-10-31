@@ -3,9 +3,30 @@ import random
 import threading
 import time
 import telebot
+from flask import Flask
 
 TOKEN = os.getenv("TOKEN")
 bot = telebot.TeleBot(TOKEN)
+
+
+app = Flask("")
+
+@app.route("/")
+def home():
+  return "Бот успешно работает 24\7!"
+
+def run_flask():
+  port = int(os.environ.get("PORT", 8080))
+  app.run(host="0.0.0.0", port=port)
+
+def keep_alive():
+  t = threading.Thread(target=run_flask)
+  t.start()
+
+
+
+
+
 
 n1 = ["админ гей", "админ лох", "админ лошара", "админ даун"]
 n2 = ["поддержать", "донат", "пожертв"]
