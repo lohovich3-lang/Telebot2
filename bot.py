@@ -257,9 +257,9 @@ def handle_all_messages(message):
     
     elif any(word in text for word in n5):
       sent_msg = bot.reply_to(message, "Фу,пошел нахуй романтик ебучий \n woaf woaf")
-        send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
 
-   
+    
     # Проверка n2 (Донат)
     elif any(word in text for word in n2):
       sent_msg = bot.reply_to(
