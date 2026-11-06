@@ -56,6 +56,20 @@ n4 = [
     "пацаны привет",
     "привет пацаны",
 ]
+n5 = [
+  "Люблю",
+  "Любил",
+  "Влюблил",
+  "Влюблен",
+  "Свидани",
+  "Романтик",
+  "Привязанность",
+  "Привязал",
+  "Привязал",
+  "Нежность",
+  "Страсть",
+  "Поцелу",
+]
 ADMIN_ID = 1475257511
 
 user_last_message_time = {}
@@ -240,7 +254,12 @@ def handle_all_messages(message):
           reply_to_message_id=message.message_id,
       )
       send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+    
+    elif any(word in text for word in n5):
+      sent_msg = bot.reply_to(message, "Фу,пошел нахуй романтик ебучий \n woaf woaf")
+        send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
 
+   
     # Проверка n2 (Донат)
     elif any(word in text for word in n2):
       sent_msg = bot.reply_to(
