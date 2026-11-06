@@ -254,10 +254,6 @@ def handle_all_messages(message):
           reply_to_message_id=message.message_id,
       )
       send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
-    
-    elif any(word in text for word in n5):
-      sent_msg = bot.reply_to(message, "Фу,пошел нахуй романтик ебучий \n woaf woaf")
-      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
 
     
     # Проверка n2 (Донат)
@@ -305,6 +301,13 @@ def handle_all_messages(message):
     # Проверка n4 (Приветствия)
     elif any(word in text for word in n4):
       sent_msg = bot.reply_to(message, "Привет!")
+      send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
+    
+    elif any(word in text for word in n5):
+      sent_msg = bot.reply_to(
+            message, 
+            "Фу,пошел нахуй романтик ебучий \n woaf woaf",
+            )
       send_and_schedule_deletion(chat_id, message.message_id, sent_msg)
 
 
