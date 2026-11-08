@@ -120,9 +120,9 @@ def send_welcome(message):
         "Срабатывает при определенных условиях(хз каких) 👇👇\n" \
         "1. Котик\n" \
         "2. Приветствие\n" \
-        "3. Дальше секрет т.к. будете как-либо это использовать\n" \
-        "4. Донат и ему синонимы\n"
-        "Нахуя я вообще пишу о двух функциях?"
+        "4. Донат и ему синоним\n" \
+        "3. Дальше секрет т.к. будете как-либо это использовать\n"
+        "Нахуя я вообще пишу о трех функциях?"
     )
     schedule_deletion(message, sent_msg, delay=300)
 
@@ -308,7 +308,7 @@ def handle_all_messages(message):
             )
             schedule_deletion(message, sent_msg, delay=600)
 
-        elif any(word in text for word in n6):
+        elif text == "@ttteto_bot кто @Sigmartyomchik ?":
             variant2 = [
                 "лох", "гей", "лошара", "лошпед", "онанист", "придурок", "дурак😒"
             ]
