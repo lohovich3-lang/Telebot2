@@ -308,9 +308,15 @@ def handle_all_messages(message):
             )
             schedule_deletion(message, sent_msg, delay=600)
 
-        elif text == "@ttteto_bot кто @Sigmartyomchik ?":
+        elif text == "@ttteto_bot кто админ?":
             variant2 = [
-                "лох", "гей", "лошара", "лошпед", "онанист", "придурок", "дурак😒"
+                "лох",
+                "гей",
+                "лошара",
+                "лошпед",
+                "онанист",
+                "придурок",
+                "дурак😒"
             ]
             sent_msg = bot.reply_to(message, random.choice(variant2))
             schedule_deletion(message, sent_msg, delay=600)
