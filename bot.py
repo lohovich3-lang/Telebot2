@@ -41,7 +41,7 @@ n5 = [
     "страсть", "поцелу", "любов"
 ]
 n6 = [
-
+    "@ttteto_bot кто @"
 ]
 ADMIN_ID = 1475257511
 
@@ -308,7 +308,7 @@ def handle_all_messages(message):
             )
             schedule_deletion(message, sent_msg, delay=600)
 
-        elif text == "кто @":
+        elif any(word in text for word in n6):
             variant2 = [
                 "лох", "гей", "лошара", "лошпед", "онанист", "придурок", "дурак😒"
             ]
