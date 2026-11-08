@@ -4,6 +4,7 @@ import threading
 import time
 import telebot
 from flask import Flask
+from telebot import types
 
 TOKEN = os.getenv("TOKEN")
 bot = telebot.TeleBot(TOKEN)
@@ -25,9 +26,9 @@ def keep_alive():
 n1 = ["админ гей", "админ лох", "админ лошара", "админ даун"]
 n2 = ["поддержать", "донат", "пожертв"]
 n3 = [
-    "любов", "ебал", "пидор", "хуесос", "бляд", "гнида", 
+    "пидор", "хуесос", "гнида", 
     "далбаеб", "долбаеб", "петух", "уеб", "уёб", "ганд", 
-    "гонд", "пидр", "ебан"
+    "гонд", "пидр",
 ]
 n4 = [
     "всем привет", "всем здарова", "всем салам", "здрасте", 
@@ -37,14 +38,24 @@ n4 = [
 n5 = [
     "люблю", "любил", "влюблил", "влюблен", "свидани", 
     "романтик", "привязанность", "привязал", "нежность", 
-    "страсть", "поцелу"
+    "страсть", "поцелу", "любов"
+]
+n6 = [
+
 ]
 ADMIN_ID = 1475257511
 
 user_last_message_time = {}
-SPAM_INTERVAL = 1.5  # Интервал антиспама в секундах
+SPAM_INTERVAL = 2  # Интервал антиспама в секундах
 
 DB_FILE = "numbers_list.txt"
+
+commands_list = [
+    types.BotCommand("pravila", "Показать правила чата"),
+    types.BotCommand("what", "Что делает бот на то или иное слово"),
+]
+
+bot.set_my_commands(commands_list)
 
 
 # --- Функции для работы с числами ---
@@ -101,6 +112,20 @@ def send_welcome(message):
     # Удаляем триггер пользователя и ответ бота через 5 минут
     schedule_deletion(message, sent_msg, delay=300)
 
+@bot.message_handler(commands=["what", "ЧеПоЧем"])
+def send_welcome(message):
+    sent_msg = bot.reply_to(
+        message,
+        "На что бот гавкает?\n" \
+        "Срабатывает при определенных условиях(хз каких) 👇👇\n" \
+        "1. Котик\n" \
+        "2. Приветствие\n" \
+        "3. Дальше секрет т.к. будете как-либо это использовать\n" \
+        "4. Донат и ему синонимы\n"
+        "Нахуя я вообще пишу о двух функциях?"
+    )
+    schedule_deletion(message, sent_msg, delay=300)
+
 
 @bot.message_handler(func=lambda message: True)
 def handle_all_messages(message):
@@ -153,9 +178,9 @@ def handle_all_messages(message):
                     sent_msg = bot.reply_to(
                         message, "⚠️ Ошибка! Введите корректное число."
                     )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
             return
-
+        
         # Обработка команды /add (только для админа)
         elif text.startswith("/add"):
             command_parts = message.text.split(maxsplit=1)
@@ -190,23 +215,26 @@ def handle_all_messages(message):
                     sent_msg = bot.reply_to(
                         message, "⚠️ Ошибка! Введите корректное число."
                     )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
             return
 
         # Старые админские команды
         elif text == "привет, идиот.":
             sent_msg = bot.reply_to(message, "Привет @Nikita2015PRO, Как дела?")
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
         elif text == "все супер,как сам?.":
             sent_msg = bot.reply_to(
                 message,
                 "Прекрасно, работаю за бесплатно.\nПоэтому, будь добр, не отвлекай"
                 " меня от работы...",
             )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
         elif text == "извини((.":
             sent_msg = bot.reply_to(message, "...")
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
+        elif text == "goodboy":
+            sent_msg = bot.reply_to(message, "Woaf woaf!")
+            schedule_deletion(message, sent_msg, delay=200)
         else:
             pass
 
@@ -225,7 +253,7 @@ def handle_all_messages(message):
                 caption="🫣",
                 reply_to_message_id=message.message_id,
             )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
 
         # Проверка n2 (Донат)
         elif any(word in text for word in n2):
@@ -233,7 +261,7 @@ def handle_all_messages(message):
                 message,
                 "Ссылка на пожертвование - https://dalink.to\nСпасибо <3",
             )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
 
         # Проверка n3 (Оскорбления / вызов админа)
         elif any(word in text for word in n3):
@@ -242,7 +270,7 @@ def handle_all_messages(message):
                 "@Nikita2015PRO , у нас тут придурок объявился!\nВозможна ошибка,"
                 " заранее извиняюсь!",
             )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
 
         # Проверка "котик"
         elif text == "котик":
@@ -265,12 +293,12 @@ def handle_all_messages(message):
                 "https://media.tenor.com/tNr8zcDCyoYAAAAM/cat.webp",
             ]
             sent_msg = bot.reply_to(message, random.choice(variant))
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
 
         # Проверка n4 (Приветствия)
         elif any(word in text for word in n4):
             sent_msg = bot.reply_to(message, "Привет!")
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
     
         # Проверка n5 (Романтика)
         elif any(word in text for word in n5):
@@ -278,7 +306,16 @@ def handle_all_messages(message):
                 message, 
                 "Фу,пошел нахуй романтик ебучий \n woaf woaf",
             )
-            schedule_deletion(message, sent_msg, delay=300)
+            schedule_deletion(message, sent_msg, delay=600)
+
+        elif text == "кто @":
+            variant2 = [
+                "лох", "гей", "лошара", "лошпед", "онанист", "придурок", "дурак😒"
+            ]
+            sent_msg = bot.reply_to(message, random.choice(variant2))
+            schedule_deletion(message, sent_msg, delay=600)
+
+
 
 
 if __name__ == "__main__":
