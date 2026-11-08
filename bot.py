@@ -222,6 +222,7 @@ def handle_all_messages(message):
         elif text == "привет, идиот.":
             sent_msg = bot.reply_to(message, "Привет @Nikita2015PRO, Как дела?")
             schedule_deletion(message, sent_msg, delay=600)
+        
         elif text == "все супер,как сам?.":
             sent_msg = bot.reply_to(
                 message,
@@ -229,12 +230,28 @@ def handle_all_messages(message):
                 " меня от работы...",
             )
             schedule_deletion(message, sent_msg, delay=600)
+        
         elif text == "извини((.":
             sent_msg = bot.reply_to(message, "...")
             schedule_deletion(message, sent_msg, delay=600)
+        
         elif text == "goodboy":
             sent_msg = bot.reply_to(message, "Woaf woaf!")
             schedule_deletion(message, sent_msg, delay=200)
+        
+        elif text == "@ttteto_bot кто админ?":
+            variant2 = [
+                "лох",
+                "гей",
+                "лошара",
+                "лошпед",
+                "онанист",
+                "придурок",
+                "дурак😒"
+            ]
+            sent_msg = bot.reply_to(message, random.choice(variant2))
+            schedule_deletion(message, sent_msg, delay=600)
+
         else:
             pass
 
@@ -307,22 +324,6 @@ def handle_all_messages(message):
                 "Фу,пошел нахуй романтик ебучий \n woaf woaf",
             )
             schedule_deletion(message, sent_msg, delay=600)
-
-        elif text == "@ttteto_bot кто админ?":
-            variant2 = [
-                "лох",
-                "гей",
-                "лошара",
-                "лошпед",
-                "онанист",
-                "придурок",
-                "дурак😒"
-            ]
-            sent_msg = bot.reply_to(message, random.choice(variant2))
-            schedule_deletion(message, sent_msg, delay=600)
-
-
-
 
 if __name__ == "__main__":
     # keep_alive() # Раскомментируйте, если запускаете на Replit/Render
