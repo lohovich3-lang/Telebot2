@@ -105,9 +105,7 @@ def schedule_deletion(*messages, delay=300):
 def send_welcome(message):
     sent_msg = bot.reply_to(
         message,
-        "Приветствую!\nНынешние правила:\n1) Запрещены любые оскорбления (кроме"
-        " в сторону админа)\n2) Запрещена любая рекламная хуйня и т.д.\n3) Больше"
-        " не придумал:(",
+        "Правила можно прочитать в описании чата.",
     )
     # Удаляем триггер пользователя и ответ бота через 5 минут
     schedule_deletion(message, sent_msg, delay=300)
@@ -250,7 +248,7 @@ def handle_all_messages(message):
                 "дурак😒"
             ]
             sent_msg = bot.reply_to(message, random.choice(variant2))
-            schedule_deletion(message, sent_msg, delay=600)
+            schedule_deletion(message, sent_msg, delay=70)
 
         else:
             pass
@@ -276,9 +274,9 @@ def handle_all_messages(message):
         elif any(word in text for word in n2):
             sent_msg = bot.reply_to(
                 message,
-                "Ссылка на пожертвование - https://dalink.to\nСпасибо <3",
+                "Ссылка на пожертвование - https://dalink.to/rnghuman\nСпасибо <3",
             )
-            schedule_deletion(message, sent_msg, delay=600)
+            schedule_deletion(message, sent_msg, delay=20)
 
         # Проверка n3 (Оскорбления / вызов админа)
         elif any(word in text for word in n3):
@@ -315,7 +313,7 @@ def handle_all_messages(message):
         # Проверка n4 (Приветствия)
         elif any(word in text for word in n4):
             sent_msg = bot.reply_to(message, "Привет!")
-            schedule_deletion(message, sent_msg, delay=600)
+            schedule_deletion(message, sent_msg, delay=30)
     
         # Проверка n5 (Романтика)
         elif any(word in text for word in n5):
@@ -323,7 +321,7 @@ def handle_all_messages(message):
                 message, 
                 "Фу,пошел нахуй романтик ебучий \n woaf woaf",
             )
-            schedule_deletion(message, sent_msg, delay=600)
+            schedule_deletion(message, sent_msg, delay=10)
 
 if __name__ == "__main__":
     # keep_alive() # Раскомментируйте, если запускаете на Replit/Render
